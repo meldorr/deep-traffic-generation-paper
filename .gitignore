@@ -1,3 +1,6 @@
 /data/
 *pkl
 *parquet
+.DS_Store
+build
+deep_traffic_generation.egg-info
