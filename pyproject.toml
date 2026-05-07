@@ -1,0 +1,25 @@
+[project]
+name = "deep-traffic-generation-paper"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "torch==2.5.1",
+    "pytorch-lightning==1.9.5",
+    "traffic==2.10.0",
+    "cartes",
+    "pitot",
+    "numba",
+    "scikit-learn",
+    "click",
+    "pandas",
+    "numpy",
+    "tensorboard",
+    "deep-traffic-generation",
+    "rich>=15.0.0",
+    "setuptools<81",
+]
+
+[tool.uv.sources]
+deep-traffic-generation = { path = "code", editable = true }
