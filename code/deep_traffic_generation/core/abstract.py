@@ -11,7 +11,7 @@ from pytorch_lightning.utilities.types import EPOCH_OUTPUT
 from torch.distributions.distribution import Distribution
 from torch.distributions import Independent, Normal
 from torch.nn import functional as F
-from traffic.core.projection import EuroPP
+from cartes.crs import EuroPP
 
 from deep_traffic_generation.core.datasets import DatasetParams
 

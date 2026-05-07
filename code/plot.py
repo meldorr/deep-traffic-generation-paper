@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import altair as alt
 
 from traffic.core import Traffic
-from traffic.core.projection import EuroPP, PlateCarree
+from cartes.crs import EuroPP, PlateCarree
 from traffic.data import airports
 from traffic.data import navaids
 
@@ -68,9 +68,9 @@ def plot_generation_tcvae(latent_space_path: str, traf_gen1_path: str, traf_gen2
 
         legend = ax0.legend(loc="upper left", fontsize=12)
         legend.get_frame().set_edgecolor("none")
-        legend.legendHandles[0]._sizes = [50]
-        legend.legendHandles[1]._sizes = [50]
-        legend.legendHandles[2]._sizes = [50]
+        legend.legend_handles[0]._sizes = [50]
+        legend.legend_handles[1]._sizes = [50]
+        legend.legend_handles[2]._sizes = [50]
 
         ax1.set_title("Generated synthetic trajectories", pad=0, fontsize=18)
 

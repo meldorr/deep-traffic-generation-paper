@@ -9,6 +9,14 @@ from os import walk
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Union, TypedDict
 
 
+def _pick_device() -> torch.device:
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
 class SingleStageVAE:
     def __init__(
         self,
@@ -49,6 +57,9 @@ class SingleStageVAE:
                 dataset_params=dataset_params,
             )
 
+        device = _pick_device()
+        self.VAE.to(device)
+        self.X.data = self.X.data.to(device)
         self.VAE.eval()
 
     def latent_space(
@@ -63,7 +74,7 @@ class SingleStageVAE:
         z_gen = p_z.sample(torch.Size([n_samples])).squeeze(1)
 
         z_embeddings = np.concatenate(
-            (z_1.detach().numpy(), z_gen.detach().numpy()), axis=0
+            (z_1.detach().cpu().numpy(), z_gen.detach().cpu().numpy()), axis=0
         )
 
         return z_embeddings

@@ -116,13 +116,16 @@ class TrafficDataset(Dataset):
         self.infos = []
         # TODO: change condition (if not is_empty(self.info_params))
         if self.info_params["index"] is not None:
-            self.infos = torch.Tensor(
-                [
-                    f.data[self.info_params["features"]]
-                    .iloc[self.info_params["index"]]
-                    .values.ravel()
-                    for f in traffic
-                ]
+            self.infos = torch.from_numpy(
+                np.asarray(
+                    [
+                        f.data[self.info_params["features"]]
+                        .iloc[self.info_params["index"]]
+                        .values.ravel()
+                        for f in traffic
+                    ],
+                    dtype=np.float32,
+                )
             )
 
     @classmethod

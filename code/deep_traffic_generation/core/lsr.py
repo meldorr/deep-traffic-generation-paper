@@ -142,9 +142,12 @@ class VampPriorLSR(LSR):
         self.z_log_var = nn.Sequential(*z_log_var_layers)
 
         # prior parameters
-        # Input to the NN that will produce the pseudo inputs
-        self.idle_input = torch.autograd.Variable(
-            torch.eye(n_components, n_components), requires_grad=False
+        # Input to the NN that will produce the pseudo inputs.
+        # Registered as a buffer so .to(device) moves it with the module.
+        self.register_buffer(
+            "idle_input",
+            torch.eye(n_components, n_components),
+            persistent=False,
         )
 
         # NN that transform the idle_inputs into the pseudo_inputs that will be transformed

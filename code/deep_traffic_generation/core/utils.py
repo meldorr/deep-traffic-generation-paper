@@ -15,7 +15,7 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader, random_split
 from torch.utils.data.dataset import Dataset
 from traffic.core import Traffic
-from traffic.core.projection import EuroPP
+from cartes.crs import EuroPP
 
 from .protocols import BuilderProtocol
 
@@ -86,7 +86,7 @@ def get_dataloaders(
             batch_size=test_batch_size
             if test_batch_size is not None
             else len(val_dataset),
-            shuffle=True,
+            shuffle=False,
             num_workers=num_workers,
         )
     else:

@@ -118,4 +118,4 @@ def cli_main(
     # testing
     # ------------
     if test_loader is not None:
-        trainer.test(test_dataloaders=test_loader)
+        trainer.test(dataloaders=test_loader)

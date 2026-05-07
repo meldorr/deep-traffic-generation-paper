@@ -211,7 +211,7 @@ def generate_vamp_tcvae(training_data: TrafficDataset, t: SingleStageVAE, g: Gen
     #Projecting Latent Space in 2 dimensions
     z_train = t.latent_space(1)
     gen = torch.cat((gen1, gen2, pseudo_means[indexes]), axis=0)
-    concat = np.concatenate((z_train, gen.detach().numpy()))
+    concat = np.concatenate((z_train, gen.detach().cpu().numpy()))
     pca = PCA(n_components=2).fit(concat[: -len(gen)])
     gen_embedded = pca.transform(concat)
 

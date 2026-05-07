@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from traffic.core import Traffic
-from traffic.core.projection import EuroPP
+from cartes.crs import EuroPP
 from traffic.data.datasets import landing_zurich_2019
 
 # fmt: on
