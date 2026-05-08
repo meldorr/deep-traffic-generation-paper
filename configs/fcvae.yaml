@@ -15,7 +15,7 @@ model:
   dropout: 0.0
 
 training:
-  epochs: 1                # smoke value; bump to ~1000 for real training
+  epochs: 1000                # smoke value; bump to ~1000 for real training
   lr: 0.001
   lr_step: 200
   lr_gamma: 0.5

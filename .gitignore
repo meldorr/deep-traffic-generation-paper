@@ -20,7 +20,7 @@ __pycache__/
 *.parquet
 
 # Trained model checkpoints (regenerable, large)
-/checkpoints/
+# /checkpoints/
 
 # Pipeline outputs (regenerable via generate.py / plot.py)
 /results/clustering/
