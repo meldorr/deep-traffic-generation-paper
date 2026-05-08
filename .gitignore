@@ -14,21 +14,15 @@ __pycache__/
 .idea/
 .vscode/
 
-# Dataset (425 MB — transfer separately, do not commit)
+# Dataset (large — transfer separately, do not commit)
 /data/
 *.pkl
 *.parquet
 
-# Pipeline outputs (regenerable from run.sh)
+# Trained model checkpoints (regenerable, large)
+/checkpoints/
+
+# Pipeline outputs (regenerable via generate.py / plot.py)
 /results/clustering/
 /results/generation/
 /results/reconstruction/
-
-# Lightning training logs (smoke runs, tensorboard events).
-# The pre-existing trained checkpoints under
-#   code/deep_traffic_generation/lightning_logs/{fcvae/version_0,tcvae/version_0,tcvae/version_1}
-# are kept because they're already tracked — gitignore only filters untracked files.
-code/deep_traffic_generation/lightning_logs/
-
-# uv stub from `uv init` (not part of the project)
-/main.py

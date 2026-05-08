@@ -1,25 +1,22 @@
 [project]
 name = "deep-traffic-generation-paper"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Simplified plain-torch reimplementation of the deep traffic generation paper."
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
 dependencies = [
-    "torch==2.5.1",
-    "pytorch-lightning==1.9.5",
-    "traffic==2.10.0",
+    "torch>=2.5",
+    "traffic>=2.10",
     "cartes",
     "pitot",
-    "numba",
     "scikit-learn",
-    "click",
     "pandas",
     "numpy",
-    "tensorboard",
-    "deep-traffic-generation",
-    "rich>=15.0.0",
-    "setuptools<81",
+    "matplotlib",
+    "altair",
+    "pyyaml",
+    "rich",
 ]
 
-[tool.uv.sources]
-deep-traffic-generation = { path = "code", editable = true }
+[tool.setuptools.packages.find]
+include = ["dtg*"]
