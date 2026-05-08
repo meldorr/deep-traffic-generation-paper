@@ -24,12 +24,34 @@ from dtg.traffic_builder import build_traffic
 
 @torch.no_grad()
 def encode_dataset(
-    model: torch.nn.Module, data: torch.Tensor, device: torch.device
+    model: torch.nn.Module,
+    data: torch.Tensor,
+    device: torch.device,
+    batch_size: int = 512,
 ) -> np.ndarray:
-    """Return the posterior mean of every sample as a numpy array."""
+    """Return the posterior mean of every sample as a numpy array.
+
+    Encodes in chunks (to avoid one huge MPS/CUDA forward pass) and
+    replaces any non-finite outputs with 0 so downstream sklearn ops
+    don't overflow.
+    """
     model.eval()
-    mu, _ = model.encode(data.to(device))
-    return mu.detach().cpu().numpy()
+    chunks: list[np.ndarray] = []
+    for start in range(0, len(data), batch_size):
+        batch = data[start : start + batch_size].to(device)
+        mu, _ = model.encode(batch)
+        chunks.append(mu.detach().cpu().numpy())
+    Z = np.concatenate(chunks, axis=0)
+
+    bad = ~np.isfinite(Z)
+    n_bad = int(bad.any(axis=1).sum())
+    if n_bad:
+        print(
+            f"  warning: {n_bad}/{len(Z)} latents had non-finite values "
+            f"(replaced with 0). The model may need retraining."
+        )
+        Z = np.where(bad, 0.0, Z)
+    return Z
 
 
 @torch.no_grad()
@@ -79,11 +101,17 @@ def reconstruct_one(
 def cluster_latents(
     Z: np.ndarray, n_clusters: int, random_state: int = 0
 ) -> tuple[np.ndarray, np.ndarray]:
-    """PCA-2D + GaussianMixture. Returns ``(Z_2d, labels)``."""
-    Z_2d = PCA(n_components=2).fit_transform(Z)
-    labels = GaussianMixture(
-        n_components=n_clusters, random_state=random_state
-    ).fit_predict(Z_2d)
+    """PCA-2D + GaussianMixture. Returns ``(Z_2d, labels)``.
+
+    sklearn matmul on macOS Accelerate raises spurious FP-exception flags
+    even on well-conditioned inputs; we suppress those here so the output
+    isn't drowned in noise.
+    """
+    with np.errstate(all="ignore"):
+        Z_2d = PCA(n_components=2).fit_transform(Z)
+        labels = GaussianMixture(
+            n_components=n_clusters, random_state=random_state
+        ).fit_predict(Z_2d)
     return Z_2d, labels
 
 
@@ -160,8 +188,9 @@ def vamp_latent_pca(
 ) -> pd.DataFrame:
     """PCA-project (train, gen1, gen2, pi1, pi2) into 2D and tag the rows."""
     concat = np.concatenate([train_latents, gen_latents], axis=0)
-    pca = PCA(n_components=2).fit(concat[: -len(gen_latents)])
-    proj = pca.transform(concat)
+    with np.errstate(all="ignore"):
+        pca = PCA(n_components=2).fit(concat[: -len(gen_latents)])
+        proj = pca.transform(concat)
     df = pd.DataFrame(proj, columns=["X1", "X2"])
     df["type"] = pd.NA
     n_gen = n_per_component
